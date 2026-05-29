@@ -94,6 +94,39 @@
     if (window.gtag && isGA4Configured) {
       window.gtag('event', eventName, eventParams);
     }
+
+    // Push to CounterAPI for real-time collective dashboard analytics (zero configuration database)
+    try {
+      let key = '';
+      if (eventName === 'qr_scan' || eventName === 'page_view') {
+        key = 'scans';
+      } else if (eventName === 'open_hotspot') {
+        if (eventParams.hotspot === 'stand') key = 'stand_opens';
+        else if (eventParams.hotspot === 'cat') key = 'cat_opens';
+      } else if (eventName === 'click_direction') {
+        key = 'maps_clicks';
+      } else if (eventName === 'click_phone') {
+        const num = eventParams.phone_number;
+        if (num === '192') key = 'phone_samu';
+        else if (num === '199') key = 'phone_defesa';
+        else if (num === '193') key = 'phone_bombeiros';
+        else if (num === '197') key = 'phone_civil';
+        else if (num === '190') key = 'phone_militar';
+      }
+
+      if (key) {
+        fetch(`https://api.counterapi.dev/v1/hdi_mapa_junino_2026/${key}/up`)
+          .then(res => res.json())
+          .then(data => {
+            console.log(`📈 CounterAPI updated: ${key} = ${data.count}`);
+            // Fire custom event to notify current page if dashboard is open in same window
+            window.dispatchEvent(new CustomEvent('hdi_counter_updated', { detail: { key, count: data.count } }));
+          })
+          .catch(err => console.error('Error updating CounterAPI:', err));
+      }
+    } catch (err) {
+      console.error('CounterAPI reporting failed:', err);
+    }
   };
 
   // Track initial QR Scan / Page View

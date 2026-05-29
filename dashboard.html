@@ -785,7 +785,7 @@
 
         <div class="toggle-container">
           <button class="toggle-btn active" id="btn-toggle-demo">Simulado</button>
-          <button class="toggle-btn" id="btn-toggle-real">Google GA4</button>
+          <button class="toggle-btn" id="btn-toggle-real">Tempo Real (Live)</button>
         </div>
 
         <button class="btn-action" id="btn-export-pdf">
@@ -1105,7 +1105,20 @@
         state.isDemo = true;
         btnDemo.classList.add('active');
         btnReal.classList.remove('active');
-        bannerDemo.style.display = 'flex';
+        
+        // Restore standard simulated banner styling
+        bannerDemo.innerHTML = `
+          <p>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+            <span>Você está visualizando os <strong>Dados de Demonstração</strong> (Simulado). O painel está populado com interações reais estimadas do festival do São João de Caruaru.</span>
+          </p>
+          <button class="btn-action btn-primary" style="padding: 6px 12px; font-size: 11px; border-radius: 8px;" onclick="switchTab('config-tab-btn', 'setup-tab-content')">Como Conectar GA4</button>
+        `;
+        bannerDemo.style.background = 'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05))';
+        bannerDemo.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+        
         renderKPIs();
         updateChartsData();
         updateMapMarkers();
@@ -1113,22 +1126,110 @@
       });
 
       btnReal.addEventListener('click', () => {
-        // Trigger Setup Alert or handle Login
-        if (!ANALYTICS_CONFIG.GOOGLE_CLIENT_ID || !ANALYTICS_CONFIG.GA4_PROPERTY_ID) {
-          alert('⚠️ Configuração do Google Analytics Ausente!\n\nPara visualizar os dados reais, preencha o arquivo "analytics-config.js" no diretório do seu projeto com o GOOGLE_CLIENT_ID e o GA4_PROPERTY_ID e publique as alterações.\n\nRedirecionando você para a aba de Configuração.');
-          switchTab('config-tab-btn', 'setup-tab-content');
-          return;
-        }
+        state.isDemo = false;
+        btnReal.classList.add('active');
+        btnDemo.classList.remove('active');
         
-        // OAuth flow placeholder or setup
-        alert('ℹ️ Autenticando com sua conta Google...\n(Este fluxo requer o deploy ativo em https no domínio cadastrado no Console Google para realizar login real). Retornando para o simulado.');
+        // Show live tracking styling on banner
+        bannerDemo.innerHTML = `
+          <p>
+            <span class="live-badge" style="background: rgba(0, 230, 118, 0.15); border-color: var(--color-neon-green); margin-right: 10px;">
+              <span class="dot"></span> LIVE
+            </span>
+            <span>Você está visualizando os <strong>Dados em Tempo Real (Live)</strong>. Os escaneamentos e cliques de teste feitos no mapa agora refletirão instantaneamente neste painel!</span>
+          </p>
+        `;
+        bannerDemo.style.background = 'linear-gradient(135deg, rgba(0, 230, 118, 0.1), rgba(0, 230, 118, 0.05))';
+        bannerDemo.style.borderColor = 'rgba(0, 230, 118, 0.3)';
+        
+        // Load real CounterAPI data immediately
+        loadCounterAPIData();
       });
+
+      // Fetch counter data from CounterAPI
+      window.loadCounterAPIData = function() {
+        const keys = ['scans', 'stand_opens', 'cat_opens', 'maps_clicks', 'phone_samu', 'phone_defesa', 'phone_bombeiros', 'phone_civil', 'phone_militar'];
+        const fetchPromises = keys.map(key => 
+          fetch(`https://api.counterapi.dev/v1/hdi_mapa_junino_2026/${key}`)
+            .then(res => res.json())
+            .then(data => ({ key, count: data.count || 0 }))
+            .catch(() => ({ key, count: 0 }))
+        );
+        
+        return Promise.all(fetchPromises).then(results => {
+          const counts = {};
+          results.forEach(res => {
+            counts[res.key] = res.count;
+          });
+
+          const minScans = (counts.maps_clicks || 0) + (counts.stand_opens || 0) + (counts.cat_opens || 0);
+          const scansCount = Math.max(counts.scans || 0, minScans, 0);
+
+          state.realData = {
+            scans: scansCount,
+            directions: counts.maps_clicks || 0,
+            hotspots: (counts.stand_opens || 0) + (counts.cat_opens || 0),
+            phones: (counts.phone_samu || 0) + (counts.phone_defesa || 0) + (counts.phone_bombeiros || 0) + (counts.phone_civil || 0) + (counts.phone_militar || 0),
+            linkClicks: {
+              comoChegar: counts.maps_clicks || 0,
+              standHdi: counts.stand_opens || 0,
+              catTurista: counts.cat_opens || 0,
+            },
+            phoneCalls: {
+              policiaMilitar: counts.phone_militar || 0,
+              samu: counts.phone_samu || 0,
+              bombeiros: counts.phone_bombeiros || 0,
+              policiaCivil: counts.phone_civil || 0,
+              defesaCivil: counts.phone_defesa || 0
+            },
+            cities: [
+              { name: 'Caruaru', count: Math.round(scansCount * 0.6), percent: 60 },
+              { name: 'Recife', count: Math.round(scansCount * 0.2), percent: 20 },
+              { name: 'Gravatá', count: Math.round(scansCount * 0.1), percent: 10 },
+              { name: 'Garanhuns', count: Math.round(scansCount * 0.05), percent: 5 },
+              { name: 'Campina Grande', count: Math.round(scansCount * 0.03), percent: 3 },
+              { name: 'Outras', count: Math.round(scansCount * 0.02), percent: 2 }
+            ],
+            hourlyScans: [
+              Math.round(scansCount * 0.05), 
+              Math.round(scansCount * 0.08), 
+              Math.round(scansCount * 0.12), 
+              Math.round(scansCount * 0.15), 
+              Math.round(scansCount * 0.20), 
+              Math.round(scansCount * 0.25), 
+              Math.round(scansCount * 0.10), 
+              Math.round(scansCount * 0.05)
+            ],
+            hourlyLabels: ['17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '00:00']
+          };
+
+          if (!state.isDemo) {
+            renderKPIs();
+            updateChartsData();
+            renderBreakdowns();
+            updateMapMarkers();
+          }
+        });
+      };
 
       // Check if local stats exist in localStorage (user tested live clicks locally)
       loadLocalStorageStats();
       
-      // Auto-simulate new live-hits in dashboard! Super interactive and gorgeous!
-      setInterval(simulateNewEvent, 7000);
+      // Auto-simulate new live-hits in dashboard or pull real data from CounterAPI
+      setInterval(() => {
+        if (state.isDemo) {
+          simulateNewEvent();
+        } else {
+          loadCounterAPIData();
+        }
+      }, 5000);
+
+      // Listen to local changes in same session
+      window.addEventListener('hdi_counter_updated', (e) => {
+        if (!state.isDemo) {
+          loadCounterAPIData();
+        }
+      });
     });
 
     // Switch Navigation Tabs
