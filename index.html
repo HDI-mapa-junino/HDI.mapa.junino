@@ -9,10 +9,18 @@
 </head>
 <body>
 
+  <!-- Parallax Background Layer -->
+  <div class="parallax-bg" aria-hidden="true">
+    <div class="parallax-orb orb-1"></div>
+    <div class="parallax-orb orb-2"></div>
+    <div class="parallax-orb orb-3"></div>
+    <div class="parallax-orb orb-4"></div>
+  </div>
+
   <div class="app-container">
-    
-    <!-- Header with Crisp branded HDI Seguros Logo -->
-    <header class="card header-card" id="header-logo">
+
+    <!-- Hero Card: Logo + Título unificados -->
+    <header class="card hero-card" id="header-logo">
       <svg class="logo-svg" viewBox="0 0 320 120" fill="none" xmlns="http://www.w3.org/2000/svg">
         <!-- H -->
         <rect x="20" y="20" width="22" height="56" fill="#006a2c" />
@@ -27,79 +35,97 @@
         <!-- SEGUROS Text -->
         <text x="20" y="112" font-family="'Outfit', sans-serif" font-size="20" font-weight="400" fill="#4d4d4d" letter-spacing="4.8">SEGUROS</text>
       </svg>
+      <div class="hero-divider"></div>
+      <h1 class="hero-title">Mapa do Evento</h1>
+      <p class="hero-subtitle">São João · Caruaru</p>
     </header>
 
-    <!-- Title Card Capsule -->
-    <section class="card title-card" id="title-banner">
-      <h1>Mapa do Evento</h1>
-    </section>
-
-    <!-- Interactive Map Card Section -->
-    <main class="map-card" id="map-section">
+    <!-- Seção do Mapa -->
+    <main class="map-card" id="map-section" data-reveal>
       <div class="map-image-wrapper">
-        <img class="map-image" src="map-section.png" alt="Mapa do Evento HDI Seguros" usemap="#map-hotspots">
-        
-        <!-- Interactive overlays matching map-section.png buttons -->
+        <img class="map-image" src="map-section.png" alt="Mapa do Evento HDI Seguros">
+
+        <!-- Hotspots interativos sobre o mapa -->
         <div class="map-hotspot hotspot-stand" id="btn-hotspot-stand" role="button" aria-label="Informações sobre Stand HDI Seguros"></div>
-        <div class="map-hotspot hotspot-cat" id="btn-hotspot-cat" role="button" aria-label="Informações sobre Centro de Atendimento ao Turista"></div>
+        <div class="map-hotspot hotspot-cat"   id="btn-hotspot-cat"   role="button" aria-label="Informações sobre Centro de Atendimento ao Turista"></div>
       </div>
 
-      <!-- Como Chegar Navigation CTA (Google Maps Direct Integration) -->
-      <a class="cta-button" id="btn-como-chegar" href="https://www.google.com/maps/dir/?api=1&destination=P%C3%A1tio+de+Eventos+Luiz+Gonzaga+Caruaru" target="_blank" rel="noopener">
-        <!-- SVG Map Marker Direction Icon -->
+      <!-- Botão Como Chegar -->
+      <a class="cta-button" id="btn-como-chegar"
+         href="https://www.google.com/maps/dir/?api=1&destination=P%C3%A1tio+de+Eventos+Luiz+Gonzaga+Caruaru"
+         target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
         </svg>
-        COMO CHEGAR (IR ATÉ O LOCAL)
+        Como Chegar
       </a>
     </main>
 
-    <!-- Itens Proibidos Section -->
-    <section class="card prohibited-card" id="prohibited-section">
+    <!-- Itens Proibidos -->
+    <section class="card prohibited-card" id="prohibited-section" data-reveal>
       <h2 class="section-title">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm5.31-4.9L6.9 4.69C8.25 3.63 9.95 3 12 3c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/>
         </svg>
         Itens Proibidos
       </h2>
-      <ul class="prohibited-list">
-        <li>Garrafas ou copos de vidro <span class="divider">•</span> Arma de fogo</li>
-        <li>Armas brancas <span class="divider">•</span> Drogas ilícitas</li>
-        <li>Aerossol <span class="divider">•</span> Fogos de artifício</li>
-        <li>Máscaras <span class="divider">•</span> Guarda-chuva com ponta</li>
-        <li>Cadeados <span class="divider">•</span> Cooler</li>
-        <li>Caixa térmica <span class="divider">•</span> Bolsa térmica ou similares</li>
-        <li>Cigarros eletrônicos / vapes</li>
-        <li style="font-weight: 600; margin-top: 6px; font-size: 14px;">Além de crianças e adolescentes desacompanhados dos responsáveis.</li>
+
+      <ul class="prohibited-grid">
+        <li>Garrafas ou copos de vidro</li>
+        <li>Arma de fogo</li>
+        <li>Armas brancas</li>
+        <li>Drogas ilícitas</li>
+        <li>Aerossol</li>
+        <li>Fogos de artifício</li>
+        <li>Máscaras</li>
+        <li>Guarda-chuva com ponta</li>
+        <li>Cadeados</li>
+        <li>Cooler</li>
+        <li>Caixa ou bolsa térmica</li>
+        <li>Cigarros eletrônicos e vapes</li>
       </ul>
+
+      <p class="prohibited-warning">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+        Crianças e adolescentes devem estar acompanhados por seus responsáveis.
+      </p>
     </section>
 
-    <!-- Click-to-Call Useful Phones Section -->
-    <section class="card phones-card" id="phones-section">
+    <!-- Telefones Úteis -->
+    <section class="card phones-card" id="phones-section" data-reveal>
       <h2 class="section-title">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
         </svg>
         Telefones Úteis
       </h2>
-      
-      <div class="phone-group">
-        <a class="phone-link" href="tel:192">SAMU <strong>192</strong></a>
-        <span class="divider" style="color: rgba(0,0,0,0.15); margin: 0 4px;">/</span>
-        <a class="phone-link" href="tel:199">Defesa Civil <strong>199</strong></a>
-      </div>
 
-      <div class="phone-group">
-        <a class="phone-link" href="tel:193">Corpo de Bombeiros <strong>193</strong></a>
-        <span class="divider" style="color: rgba(0,0,0,0.15); margin: 0 4px;">/</span>
-        <a class="phone-link" href="tel:197">Polícia Civil <strong>197</strong></a>
-        <span class="divider" style="color: rgba(0,0,0,0.15); margin: 0 4px;">/</span>
-        <a class="phone-link" href="tel:190">Polícia Militar <strong>190</strong></a>
+      <div class="phone-list">
+        <a class="phone-item" href="tel:192">
+          <span class="phone-name">SAMU</span>
+          <span class="phone-number">192</span>
+        </a>
+        <a class="phone-item" href="tel:199">
+          <span class="phone-name">Defesa Civil</span>
+          <span class="phone-number">199</span>
+        </a>
+        <a class="phone-item" href="tel:193">
+          <span class="phone-name">Corpo de Bombeiros</span>
+          <span class="phone-number">193</span>
+        </a>
+        <a class="phone-item" href="tel:197">
+          <span class="phone-name">Polícia Civil</span>
+          <span class="phone-number">197</span>
+        </a>
+        <a class="phone-item" href="tel:190">
+          <span class="phone-name">Polícia Militar</span>
+          <span class="phone-number">190</span>
+        </a>
       </div>
     </section>
 
-    <!-- Scan Info footer Badge -->
-    <div class="qr-badge">
+    <!-- Rodapé QR -->
+    <div class="qr-badge" data-reveal>
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 8.5v3h-3v-3h3M11 12H5v6h6v-6zm7-5.5v3h-3v-3h3M19 5h-6v6h6V5zm-2 10.5v3h-3v-3h3m2-3.5h-6v6h6v-6zm0-2h-2v2h2v-2zm-4-2h-2v2h2v-2zm4-4h-2v2h2V5zm-2 2h-2v2h2V7zm-2-2h-2v2h2V5zm-2 12h-2v2h2v-2zm4 2h-2v2h2v-2zm2-2h-2v2h2v-2zm-6-2h-2v2h2v-2zm2 0h-2v2h2v-2zm2-2h-2v2h2v-2z"/>
       </svg>
@@ -108,11 +134,10 @@
 
   </div>
 
-  <!-- Interactive Modals for Hotspots -->
+  <!-- Modal: Stand HDI -->
   <div class="info-modal" id="modal-stand">
     <div class="modal-content">
       <div class="modal-icon">
-        <!-- SVG Chalet / Shop Icon -->
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 3L4 9v11h16V9l-8-6zm6 15H6v-8.35L12 5.1l6 4.55V18zM9 13h6v3H9v-3z"/>
         </svg>
@@ -121,23 +146,23 @@
       <p class="modal-description">
         Visite o nosso stand exclusivo no Pátio de Eventos! Temos ativações interativas, brindes personalizados, carregadores para o seu celular e uma área aconchegante para você descansar e aproveitar o melhor do São João com segurança.
       </p>
-      <button class="modal-close-btn" id="modal-stand-close">FECHAR</button>
+      <button type="button" class="modal-close-btn" id="modal-stand-close">Fechar</button>
     </div>
   </div>
 
+  <!-- Modal: C.A.T. -->
   <div class="info-modal" id="modal-cat">
     <div class="modal-content">
       <div class="modal-icon">
-        <!-- SVG Info Help Icon -->
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
         </svg>
       </div>
       <h3 class="modal-title">C.A.T. Turista</h3>
       <p class="modal-description">
-        O Centro de Atendimento ao Turista (C.A.T.) está posicionado estrategicamente para prestar todo o suporte aos visitantes do São João. Lá você encontra guias locais, mapas físicos do evento e apoio informativo geral.
+        O Centro de Atendimento ao Turista está posicionado estrategicamente para prestar todo o suporte aos visitantes do São João. Encontre guias locais, mapas físicos do evento e apoio informativo geral.
       </p>
-      <button class="modal-close-btn" id="modal-cat-close">FECHAR</button>
+      <button type="button" class="modal-close-btn" id="modal-cat-close">Fechar</button>
     </div>
   </div>
 
