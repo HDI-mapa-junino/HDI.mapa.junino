@@ -1,0 +1,451 @@
+/* Import fonts from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --color-bg: #006a2c; /* HDI primary emerald green */
+  --color-primary-light: #008f53; /* Vibrant brand green */
+  --color-white: #ffffff;
+  --color-text-dark: #333333;
+  --color-text-muted: #666666;
+  --font-title: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-white);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Mobile-first centered container layout */
+.app-container {
+  width: 100%;
+  max-width: 500px; /* Perfect smartphone mockup layout */
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 24px 20px 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Base card styling */
+.card {
+  width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  transition: var(--transition-smooth);
+}
+
+/* Header & Logo styling */
+.header-card {
+  background-color: var(--color-white);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.logo-svg {
+  width: auto;
+  height: 64px;
+  display: block;
+}
+
+/* Title Card styling */
+.title-card {
+  background-color: var(--color-white);
+  color: var(--color-bg);
+  text-align: center;
+  padding: 16px 20px;
+  font-family: var(--font-title);
+  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: 1.5px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.title-card h1 {
+  font-size: 24px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+/* Map Card Section */
+.map-card {
+  position: relative;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.map-image-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 28px;
+  overflow: hidden;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
+  background-color: var(--color-white);
+}
+
+.map-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Interactive Hotspot Buttons overlay on image */
+.map-hotspot {
+  position: absolute;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0); /* Transparent standard */
+  border-radius: 50px;
+  transition: var(--transition-smooth);
+  border: 2px dashed transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.map-hotspot:hover {
+  background-color: rgba(0, 143, 83, 0.15);
+  border-color: rgba(0, 143, 83, 0.5);
+}
+
+.map-hotspot:active {
+  transform: scale(0.95);
+  background-color: rgba(0, 143, 83, 0.3);
+}
+
+/* Precise percentage positions calculated for map-section.png */
+.hotspot-stand {
+  left: 28.5%;
+  width: 28%;
+  top: 83%;
+  height: 14%;
+}
+
+.hotspot-cat {
+  left: 58.5%;
+  width: 31%;
+  top: 83%;
+  height: 14%;
+}
+
+/* Pulse animation for CTA button */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6);
+  }
+  70% {
+    transform: scale(1.03);
+    box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+
+/* Prominent Como Chegar Button */
+.cta-button {
+  width: 100%;
+  margin-top: 16px;
+  background-color: var(--color-white);
+  color: var(--color-bg);
+  border: none;
+  border-radius: 50px;
+  padding: 18px 24px;
+  font-family: var(--font-title);
+  font-weight: 800;
+  font-size: 18px;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transition: var(--transition-smooth);
+  animation: pulse 2.5s infinite;
+  cursor: pointer;
+}
+
+.cta-button svg {
+  fill: currentColor;
+  width: 24px;
+  height: 24px;
+  transition: var(--transition-smooth);
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  background-color: #f8fcf9;
+  box-shadow: 0 12px 30px rgba(255, 255, 255, 0.25);
+}
+
+.cta-button:active {
+  transform: translateY(1px);
+}
+
+.cta-button:hover svg {
+  transform: translateX(4px);
+}
+
+/* Itens Proibidos Section */
+.prohibited-card {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.section-title svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+}
+
+.prohibited-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.prohibited-list li {
+  position: relative;
+  padding: 0 8px;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.prohibited-list li span.divider {
+  margin: 0 8px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Useful Phones Section */
+.phones-card {
+  background-color: var(--color-white);
+  color: var(--color-text-dark);
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.phones-card .section-title {
+  color: var(--color-bg);
+  margin-bottom: 16px;
+}
+
+.phones-card .section-title svg {
+  fill: var(--color-bg);
+}
+
+.phone-subtitle {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--color-bg);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.phone-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.phone-group:last-of-type {
+  margin-bottom: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 16px;
+}
+
+.phone-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-dark);
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 12px;
+  transition: var(--transition-smooth);
+  border: 1.5px solid transparent;
+}
+
+.phone-link strong {
+  color: var(--color-bg);
+  font-family: var(--font-title);
+  font-size: 17px;
+  margin-left: 5px;
+}
+
+.phone-link:hover {
+  background-color: rgba(0, 106, 44, 0.05);
+  border-color: rgba(0, 106, 44, 0.15);
+  transform: translateY(-1px);
+}
+
+.phone-link:active {
+  transform: translateY(0);
+  background-color: rgba(0, 106, 44, 0.1);
+}
+
+/* Modals & Info Panel overlay */
+.info-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.info-modal.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-content {
+  background-color: var(--color-white);
+  color: var(--color-text-dark);
+  width: 90%;
+  max-width: 400px;
+  border-radius: 28px;
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  transform: translateY(30px);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.info-modal.active .modal-content {
+  transform: translateY(0);
+}
+
+.modal-icon {
+  width: 64px;
+  height: 64px;
+  background-color: rgba(0, 106, 44, 0.1);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px auto;
+}
+
+.modal-icon svg {
+  width: 32px;
+  height: 32px;
+  fill: var(--color-bg);
+}
+
+.modal-title {
+  font-family: var(--font-title);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-bg);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.modal-description {
+  font-size: 15px;
+  color: var(--color-text-muted);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.modal-close-btn {
+  background-color: var(--color-bg);
+  color: var(--color-white);
+  border: none;
+  border-radius: 50px;
+  padding: 14px 28px;
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  transition: var(--transition-smooth);
+  box-shadow: 0 4px 15px rgba(0, 106, 44, 0.3);
+}
+
+.modal-close-btn:hover {
+  background-color: var(--color-primary-light);
+  transform: translateY(-1px);
+}
+
+.modal-close-btn:active {
+  transform: translateY(0);
+}
+
+/* Floating Action QR code utility (optional & elegant) */
+.qr-badge {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.qr-badge svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
