@@ -124,18 +124,50 @@
           .catch(err => console.error('Error updating CounterAPI:', err));
       }
 
-      // Rastreamento geográfico apenas no scan inicial
+      // Rastreamento geográfico (estado + cidade) apenas no scan inicial
       if (key === 'scans') {
+        const CAPI = 'https://api.counterapi.dev/v1/hdi_saojoao_caruaru_2026';
+
+        const KNOWN_CITIES = [
+          'caruaru','recife','olinda','jaboatao_dos_guararapes','camaragibe','paulista',
+          'petrolina','garanhuns','caetes','bezerros','surubim','santa_cruz_do_capibaribe',
+          'toritama','vitoria_de_santo_antao','limoeiro','carpina','bonito',
+          'joao_pessoa','campina_grande','patos','bayeux','santa_rita',
+          'fortaleza','juazeiro_do_norte','sobral','crato','caucaia','maracanau',
+          'maceio','arapiraca','natal','mossoro','parnamirim','caico',
+          'aracaju','nossa_senhora_do_socorro',
+          'salvador','feira_de_santana','vitoria_da_conquista','ilheus','camacari',
+          'teresina','parnaiba','sao_luis','imperatriz',
+          'sao_paulo','campinas','guarulhos','sao_bernardo_do_campo','osasco',
+          'rio_de_janeiro','niteroi','duque_de_caxias','nova_iguacu','sao_goncalo',
+          'belo_horizonte','contagem','betim','uberlandia','juiz_de_fora',
+          'brasilia','goiania','aparecida_de_goiania','anapolis',
+          'manaus','belem','santarem','porto_velho','rio_branco','boa_vista','macapa',
+          'porto_alegre','caxias_do_sul','canoas','curitiba','londrina','maringa',
+          'florianopolis','joinville','blumenau','campo_grande','cuiaba','palmas',
+          'vitoria','vila_velha','serra'
+        ];
+
         fetch('https://ipapi.co/json/')
           .then(r => r.json())
           .then(geo => {
             if (!geo || geo.error) return;
-            const state  = (geo.region_code || '').toLowerCase().replace(/[^a-z]/g, '');
-            const isBR   = geo.country_code === 'BR';
-            const geoKey = isBR && state ? `geo_${state}` : 'geo_internacional';
-            fetch(`https://api.counterapi.dev/v1/hdi_saojoao_caruaru_2026/${geoKey}/up`)
-              .then(() => console.log(`🗺️ Geo tracked: ${geoKey}`))
-              .catch(() => {});
+
+            // Estado
+            const state    = (geo.region_code || '').toLowerCase().replace(/[^a-z]/g, '');
+            const isBR     = geo.country_code === 'BR';
+            const stateKey = isBR && state ? `geo_${state}` : 'geo_internacional';
+            fetch(`${CAPI}/${stateKey}/up`).catch(() => {});
+
+            // Cidade
+            const slug = (geo.city || '')
+              .toLowerCase()
+              .normalize('NFD').replace(/[̀-ͯ]/g, '')
+              .replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+            const cityKey = `geo_city_${KNOWN_CITIES.includes(slug) ? slug : 'outros'}`;
+            fetch(`${CAPI}/${cityKey}/up`).catch(() => {});
+
+            console.log(`🗺️ ${stateKey} · 🏙️ ${cityKey}`);
           })
           .catch(() => {});
       }

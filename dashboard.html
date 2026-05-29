@@ -275,6 +275,65 @@
       width: 100%;
     }
 
+    /* ─── City section ─── */
+    .city-card { padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+
+    .city-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .city-total-badge {
+      font-size: 11px; font-weight: 700; color: var(--green-light);
+      background: rgba(0,106,44,0.07); border-radius: 50px;
+      padding: 3px 10px; letter-spacing: 0.4px;
+    }
+
+    .city-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 8px;
+    }
+
+    .city-empty { grid-column: 1 / -1; }
+
+    .city-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px;
+      background: rgba(0,106,44,0.04);
+      border: 1px solid rgba(0,106,44,0.09);
+      border-radius: 11px;
+      transition: background 0.2s var(--ease);
+    }
+    .city-row:hover { background: rgba(0,106,44,0.08); }
+
+    .city-rank {
+      font-family: var(--font-title); font-size: 11px; font-weight: 800;
+      color: var(--green-light); width: 16px; text-align: center; flex-shrink: 0;
+    }
+
+    .city-info { flex: 1; min-width: 0; }
+
+    .city-name {
+      font-size: 12.5px; font-weight: 600; color: var(--text-dark);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .city-state { color: var(--text-muted); font-weight: 400; font-size: 11px; }
+
+    .city-bar-track {
+      height: 3px; background: rgba(0,106,44,0.1);
+      border-radius: 3px; margin-top: 4px; overflow: hidden;
+    }
+    .city-bar-fill {
+      height: 100%; border-radius: 3px;
+      background: linear-gradient(90deg, var(--green), var(--green-light));
+      transition: width 0.8s var(--ease);
+    }
+
+    .city-count {
+      font-family: var(--font-title); font-size: 15px; font-weight: 800;
+      color: var(--green); min-width: 28px; text-align: right; flex-shrink: 0;
+    }
+
     /* ─── Print ─── */
     @media print {
       body { background: white !important; color: black !important; padding: 0; }
@@ -427,6 +486,20 @@
       </div>
     </section>
 
+    <!-- Scans por Cidade -->
+    <section class="card city-card">
+      <div class="city-card-header">
+        <h2 class="card-title">
+          <svg viewBox="0 0 24 24"><path d="M15 11V5l-3-3-3 3v2H3v14h18V11h-6zm-8 8H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5v-2h2v2zm6 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm6 12h-2v-2h2v2zm0-4h-2v-2h2v2z"/></svg>
+          Scans por Cidade
+        </h2>
+        <span class="city-total-badge" id="city-total-badge"></span>
+      </div>
+      <div class="city-grid" id="city-ranking-list">
+        <div class="empty-msg city-empty">Carregando cidades...</div>
+      </div>
+    </section>
+
     <!-- Status bar -->
     <footer class="status-bar">
       <span>Dados reais via CounterAPI · namespace: <code>hdi_saojoao_caruaru_2026</code> · Localização via ipapi.co</span>
@@ -487,6 +560,97 @@
 
     const GEO_CODES = Object.keys(STATE_COORDS);
 
+    // Mapa de slug → nome de exibição + UF
+    const CITY_MAP = {
+      caruaru:                    { name: 'Caruaru',                    uf: 'PE' },
+      recife:                     { name: 'Recife',                      uf: 'PE' },
+      olinda:                     { name: 'Olinda',                      uf: 'PE' },
+      jaboatao_dos_guararapes:    { name: 'Jaboatão dos Guararapes',     uf: 'PE' },
+      camaragibe:                 { name: 'Camaragibe',                  uf: 'PE' },
+      paulista:                   { name: 'Paulista',                    uf: 'PE' },
+      petrolina:                  { name: 'Petrolina',                   uf: 'PE' },
+      garanhuns:                  { name: 'Garanhuns',                   uf: 'PE' },
+      caetes:                     { name: 'Caetés',                      uf: 'PE' },
+      bezerros:                   { name: 'Bezerros',                    uf: 'PE' },
+      surubim:                    { name: 'Surubim',                     uf: 'PE' },
+      santa_cruz_do_capibaribe:   { name: 'Santa Cruz do Capibaribe',    uf: 'PE' },
+      toritama:                   { name: 'Toritama',                    uf: 'PE' },
+      vitoria_de_santo_antao:     { name: 'Vitória de Santo Antão',      uf: 'PE' },
+      limoeiro:                   { name: 'Limoeiro',                    uf: 'PE' },
+      carpina:                    { name: 'Carpina',                     uf: 'PE' },
+      bonito:                     { name: 'Bonito',                      uf: 'PE' },
+      joao_pessoa:                { name: 'João Pessoa',                 uf: 'PB' },
+      campina_grande:             { name: 'Campina Grande',              uf: 'PB' },
+      patos:                      { name: 'Patos',                       uf: 'PB' },
+      bayeux:                     { name: 'Bayeux',                      uf: 'PB' },
+      santa_rita:                 { name: 'Santa Rita',                  uf: 'PB' },
+      fortaleza:                  { name: 'Fortaleza',                   uf: 'CE' },
+      juazeiro_do_norte:          { name: 'Juazeiro do Norte',           uf: 'CE' },
+      sobral:                     { name: 'Sobral',                      uf: 'CE' },
+      crato:                      { name: 'Crato',                       uf: 'CE' },
+      caucaia:                    { name: 'Caucaia',                     uf: 'CE' },
+      maracanau:                  { name: 'Maracanaú',                   uf: 'CE' },
+      maceio:                     { name: 'Maceió',                      uf: 'AL' },
+      arapiraca:                  { name: 'Arapiraca',                   uf: 'AL' },
+      natal:                      { name: 'Natal',                       uf: 'RN' },
+      mossoro:                    { name: 'Mossoró',                     uf: 'RN' },
+      parnamirim:                 { name: 'Parnamirim',                  uf: 'RN' },
+      caico:                      { name: 'Caicó',                       uf: 'RN' },
+      aracaju:                    { name: 'Aracaju',                     uf: 'SE' },
+      nossa_senhora_do_socorro:   { name: 'N. Sra. do Socorro',          uf: 'SE' },
+      salvador:                   { name: 'Salvador',                    uf: 'BA' },
+      feira_de_santana:           { name: 'Feira de Santana',            uf: 'BA' },
+      vitoria_da_conquista:       { name: 'Vitória da Conquista',        uf: 'BA' },
+      ilheus:                     { name: 'Ilhéus',                      uf: 'BA' },
+      camacari:                   { name: 'Camaçari',                    uf: 'BA' },
+      teresina:                   { name: 'Teresina',                    uf: 'PI' },
+      parnaiba:                   { name: 'Parnaíba',                    uf: 'PI' },
+      sao_luis:                   { name: 'São Luís',                    uf: 'MA' },
+      imperatriz:                 { name: 'Imperatriz',                  uf: 'MA' },
+      sao_paulo:                  { name: 'São Paulo',                   uf: 'SP' },
+      campinas:                   { name: 'Campinas',                    uf: 'SP' },
+      guarulhos:                  { name: 'Guarulhos',                   uf: 'SP' },
+      sao_bernardo_do_campo:      { name: 'São Bernardo do Campo',       uf: 'SP' },
+      osasco:                     { name: 'Osasco',                      uf: 'SP' },
+      rio_de_janeiro:             { name: 'Rio de Janeiro',              uf: 'RJ' },
+      niteroi:                    { name: 'Niterói',                     uf: 'RJ' },
+      duque_de_caxias:            { name: 'Duque de Caxias',             uf: 'RJ' },
+      nova_iguacu:                { name: 'Nova Iguaçu',                 uf: 'RJ' },
+      sao_goncalo:                { name: 'São Gonçalo',                 uf: 'RJ' },
+      belo_horizonte:             { name: 'Belo Horizonte',              uf: 'MG' },
+      contagem:                   { name: 'Contagem',                    uf: 'MG' },
+      betim:                      { name: 'Betim',                       uf: 'MG' },
+      uberlandia:                 { name: 'Uberlândia',                  uf: 'MG' },
+      juiz_de_fora:               { name: 'Juiz de Fora',                uf: 'MG' },
+      brasilia:                   { name: 'Brasília',                    uf: 'DF' },
+      goiania:                    { name: 'Goiânia',                     uf: 'GO' },
+      aparecida_de_goiania:       { name: 'Aparecida de Goiânia',        uf: 'GO' },
+      anapolis:                   { name: 'Anápolis',                    uf: 'GO' },
+      manaus:                     { name: 'Manaus',                      uf: 'AM' },
+      belem:                      { name: 'Belém',                       uf: 'PA' },
+      santarem:                   { name: 'Santarém',                    uf: 'PA' },
+      porto_velho:                { name: 'Porto Velho',                 uf: 'RO' },
+      rio_branco:                 { name: 'Rio Branco',                  uf: 'AC' },
+      boa_vista:                  { name: 'Boa Vista',                   uf: 'RR' },
+      macapa:                     { name: 'Macapá',                      uf: 'AP' },
+      porto_alegre:               { name: 'Porto Alegre',                uf: 'RS' },
+      caxias_do_sul:              { name: 'Caxias do Sul',               uf: 'RS' },
+      canoas:                     { name: 'Canoas',                      uf: 'RS' },
+      curitiba:                   { name: 'Curitiba',                    uf: 'PR' },
+      londrina:                   { name: 'Londrina',                    uf: 'PR' },
+      maringa:                    { name: 'Maringá',                     uf: 'PR' },
+      florianopolis:              { name: 'Florianópolis',               uf: 'SC' },
+      joinville:                  { name: 'Joinville',                   uf: 'SC' },
+      blumenau:                   { name: 'Blumenau',                    uf: 'SC' },
+      campo_grande:               { name: 'Campo Grande',                uf: 'MS' },
+      cuiaba:                     { name: 'Cuiabá',                      uf: 'MT' },
+      palmas:                     { name: 'Palmas',                      uf: 'TO' },
+      vitoria:                    { name: 'Vitória',                     uf: 'ES' },
+      vila_velha:                 { name: 'Vila Velha',                  uf: 'ES' },
+      serra:                      { name: 'Serra',                       uf: 'ES' },
+      outros:                     { name: 'Outras cidades',              uf: '…' },
+    };
+
     // ─── State ─────────────────────────────────────────────────────────────────
     let chart    = null;
     let geoMap   = null;
@@ -512,6 +676,12 @@
     async function fetchGeoData() {
       const geoKeys = GEO_CODES.map(c => `geo_${c}`).concat(['geo_internacional']);
       const res = await Promise.all(geoKeys.map(fetchCounter));
+      return Object.fromEntries(res);
+    }
+
+    async function fetchCityData() {
+      const cityKeys = Object.keys(CITY_MAP).map(s => `geo_city_${s}`);
+      const res = await Promise.all(cityKeys.map(fetchCounter));
       return Object.fromEntries(res);
     }
 
@@ -644,6 +814,42 @@
       });
     }
 
+    // ─── City Ranking ──────────────────────────────────────────────────────────
+    function renderCities(cityData) {
+      const ranked = Object.entries(CITY_MAP)
+        .map(([slug, info]) => ({ slug, ...info, count: cityData[`geo_city_${slug}`] || 0 }))
+        .filter(c => c.count > 0)
+        .sort((a, b) => b.count - a.count);
+
+      const badge = document.getElementById('city-total-badge');
+      const container = document.getElementById('city-ranking-list');
+
+      if (ranked.length === 0) {
+        if (badge) badge.textContent = '';
+        container.innerHTML = `<div class="empty-msg city-empty">
+          <svg viewBox="0 0 24 24"><path d="M15 11V5l-3-3-3 3v2H3v14h18V11h-6zm-8 8H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5v-2h2v2zm6 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2zm6 12h-2v-2h2v2zm0-4h-2v-2h2v2z"/></svg>
+          Nenhuma cidade detectada ainda.<br>
+          <span style="font-size:11px;opacity:0.7">A cidade aparece após os primeiros QR scans.</span>
+        </div>`;
+        return;
+      }
+
+      if (badge) badge.textContent = `${ranked.length} cidade${ranked.length !== 1 ? 's' : ''}`;
+
+      const maxCount = ranked[0].count;
+      container.innerHTML = ranked.map((c, i) => `
+        <div class="city-row">
+          <span class="city-rank">${i + 1}</span>
+          <div class="city-info">
+            <div class="city-name">${c.name} <span class="city-state">${c.uf}</span></div>
+            <div class="city-bar-track">
+              <div class="city-bar-fill" style="width:${((c.count / maxCount) * 100).toFixed(1)}%"></div>
+            </div>
+          </div>
+          <span class="city-count">${c.count}</span>
+        </div>`).join('');
+    }
+
     // ─── State Ranking ─────────────────────────────────────────────────────────
     function renderGeoSection(geoData) {
       const states = GEO_CODES.map(code => ({
@@ -687,9 +893,12 @@
     }
 
     // ─── Export CSV ────────────────────────────────────────────────────────────
+    let lastCityData = null;
+
     function exportCSV() {
-      const d   = lastData;
-      const geo = lastGeoData;
+      const d    = lastData;
+      const geo  = lastGeoData;
+      const city = lastCityData;
       if (!d) { alert('Aguarde o carregamento dos dados.'); return; }
 
       const ts = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR');
@@ -734,6 +943,19 @@
           rows.push(['Estado', 'UF', 'Scans']);
           geoRows.forEach(r => rows.push([r.name, r.uf, r.count]));
           if (intl > 0) rows.push(['Internacional', '🌍', intl]);
+        }
+      }
+
+      if (city) {
+        const cityRows = Object.entries(CITY_MAP)
+          .map(([slug, info]) => ({ ...info, count: city[`geo_city_${slug}`] || 0 }))
+          .filter(r => r.count > 0)
+          .sort((a, b) => b.count - a.count);
+
+        if (cityRows.length > 0) {
+          rows.push([], ['DISTRIBUIÇÃO POR CIDADE', '']);
+          rows.push(['Cidade', 'UF', 'Scans']);
+          cityRows.forEach(r => rows.push([r.name, r.uf, r.count]));
         }
       }
 
@@ -782,15 +1004,19 @@
       btn.disabled = true;
 
       try {
-        const [data, geoData] = await Promise.all([fetchCounters(), fetchGeoData()]);
+        const [data, geoData, cityData] = await Promise.all([
+          fetchCounters(), fetchGeoData(), fetchCityData()
+        ]);
 
-        lastData    = data;
-        lastGeoData = geoData;
+        lastData     = data;
+        lastGeoData  = geoData;
+        lastCityData = cityData;
 
         renderKPIs(data);
         renderChart(data);
         renderPhones(data);
         renderGeoSection(geoData);
+        renderCities(cityData);
         updateTimestamp();
         startCountdown();
       } catch (err) {
