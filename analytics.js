@@ -119,10 +119,25 @@
           .then(res => res.json())
           .then(data => {
             console.log(`📈 CounterAPI updated: ${key} = ${data.count}`);
-            // Fire custom event to notify current page if dashboard is open in same window
             window.dispatchEvent(new CustomEvent('hdi_counter_updated', { detail: { key, count: data.count } }));
           })
           .catch(err => console.error('Error updating CounterAPI:', err));
+      }
+
+      // Rastreamento geográfico apenas no scan inicial
+      if (key === 'scans') {
+        fetch('https://ipapi.co/json/')
+          .then(r => r.json())
+          .then(geo => {
+            if (!geo || geo.error) return;
+            const state  = (geo.region_code || '').toLowerCase().replace(/[^a-z]/g, '');
+            const isBR   = geo.country_code === 'BR';
+            const geoKey = isBR && state ? `geo_${state}` : 'geo_internacional';
+            fetch(`https://api.counterapi.dev/v1/hdi_saojoao_caruaru_2026/${geoKey}/up`)
+              .then(() => console.log(`🗺️ Geo tracked: ${geoKey}`))
+              .catch(() => {});
+          })
+          .catch(() => {});
       }
     } catch (err) {
       console.error('CounterAPI reporting failed:', err);
