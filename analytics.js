@@ -112,6 +112,8 @@
         else if (num === '193') key = 'phone_bombeiros';
         else if (num === '197') key = 'phone_civil';
         else if (num === '190') key = 'phone_militar';
+      } else if (eventName === 'click_instagram') {
+        key = 'instagram_clicks';
       }
 
       if (key) {

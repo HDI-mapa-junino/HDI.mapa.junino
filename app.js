@@ -101,10 +101,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // ─── Instagram Tracking ────────────────────────────────────────────────────
+  const btnInstagram = document.getElementById('btn-instagram');
+  if (btnInstagram) {
+    btnInstagram.addEventListener('click', () => {
+      if (window['HDI_TrackEvent']) {
+        window['HDI_TrackEvent']('click_instagram', {
+          destination: 'https://www.instagram.com/hdisegurosbr'
+        });
+      }
+    });
+  }
+
   // ─── Haptic Feedback ───────────────────────────────────────────────────────
   const triggerHaptic = () => { if ('vibrate' in navigator) navigator.vibrate(15); };
 
-  [btnStand, btnCat, btnComoChegar, ...document.querySelectorAll('.phone-item')].forEach(el => {
+  [btnStand, btnCat, btnComoChegar, btnInstagram, ...document.querySelectorAll('.phone-item')].forEach(el => {
     if (el) el.addEventListener('click', triggerHaptic);
   });
 });

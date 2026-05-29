@@ -74,55 +74,40 @@ body {
   overflow: hidden;
 }
 
-/* ─── Hero Card ─── */
-@keyframes heroIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.hero-card {
-  background-color: var(--white);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 28px 24px 22px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.22);
-  animation: heroIn 0.65s var(--spring) both;
-}
-
-.logo-svg {
-  width: auto;
-  height: 60px;
-  display: block;
-}
-
-.hero-divider {
-  width: 44px;
-  height: 2px;
-  background: linear-gradient(90deg, var(--green), var(--green-light));
-  border-radius: 2px;
-  margin: 16px 0 13px;
-}
-
-.hero-title {
+/* ─── Instagram Link ─── */
+.instagram-link {
+  width: 100%;
+  margin-top: 10px;
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50px;
+  padding: 13px 20px;
   font-family: var(--font-title);
-  font-weight: 800;
-  font-size: 21px;
-  color: var(--green);
-  text-transform: uppercase;
-  letter-spacing: 2.5px;
-  text-align: center;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--white);
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.22s var(--ease), border-color 0.22s var(--ease);
+  letter-spacing: 0.3px;
 }
 
-.hero-subtitle {
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--green-light);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-top: 5px;
-  opacity: 0.8;
+.instagram-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.65);
+}
+
+.instagram-link:active {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.instagram-link svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
 }
 
 /* ─── Scroll Reveal ─── */
@@ -180,8 +165,9 @@ body {
   background-color: rgba(0, 143, 83, 0.28);
 }
 
-.hotspot-stand { left: 28.5%; width: 28%; top: 83%; height: 14%; }
-.hotspot-cat   { left: 58.5%; width: 31%; top: 83%; height: 14%; }
+/* posições calibradas para HDI-mapa-v2.png */
+.hotspot-stand { left: 7%;  width: 43%; top: 81%; height: 10%; }
+.hotspot-cat   { left: 52%; width: 44%; top: 81%; height: 10%; }
 
 /* ─── CTA Button ─── */
 @keyframes pulse {

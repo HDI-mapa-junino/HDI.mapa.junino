@@ -130,10 +130,13 @@
 
     /* ─── KPI Grid ─── */
     .kpi-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
     }
-    @media (max-width: 900px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 500px) { .kpi-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 700px)  { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 440px)  { .kpi-grid { grid-template-columns: 1fr; } }
 
     .kpi-card {
       padding: 22px 22px 18px;
@@ -440,6 +443,23 @@
         <span class="kpi-value" id="kpi-phones">–</span>
         <span class="kpi-sub">chamadas de emergência</span>
       </div>
+
+      <div class="card kpi-card">
+        <div class="kpi-icon-row">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#006a2c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.5" cy="6.5" r="0.5" fill="#006a2c" stroke="none"/>
+            </svg>
+          </div>
+          <span class="kpi-badge">Instagram</span>
+        </div>
+        <span class="kpi-label">Visitas ao Perfil</span>
+        <span class="kpi-value" id="kpi-instagram">–</span>
+        <span class="kpi-sub">cliques em @hdisegurosbr</span>
+      </div>
+
     </section>
 
     <!-- Interações + Phones -->
@@ -525,7 +545,8 @@
 
     const KEYS = [
       'scans', 'maps_clicks', 'stand_opens', 'cat_opens',
-      'phone_samu', 'phone_defesa', 'phone_bombeiros', 'phone_civil', 'phone_militar'
+      'phone_samu', 'phone_defesa', 'phone_bombeiros', 'phone_civil', 'phone_militar',
+      'instagram_clicks'
     ];
 
     const STATE_COORDS = {
@@ -689,7 +710,7 @@
 
     // ─── KPIs ──────────────────────────────────────────────────────────────────
     function renderKPIs(d) {
-      const totalInter = (d.maps_clicks || 0) + (d.stand_opens || 0) + (d.cat_opens || 0);
+      const totalInter  = (d.maps_clicks || 0) + (d.stand_opens || 0) + (d.cat_opens || 0) + (d.instagram_clicks || 0);
       const totalPhones = (d.phone_samu || 0) + (d.phone_defesa || 0) +
                           (d.phone_bombeiros || 0) + (d.phone_civil || 0) + (d.phone_militar || 0);
       const scans = d.scans || 0;
@@ -701,13 +722,14 @@
         scans > 0 ? `${fmt(totalInter)} interações de ${fmt(scans)} scans` : 'aguardando scans';
       document.getElementById('kpi-directions').textContent  = fmt(d.maps_clicks);
       document.getElementById('kpi-phones').textContent      = fmt(totalPhones);
+      document.getElementById('kpi-instagram').textContent   = fmt(d.instagram_clicks);
     }
 
     // ─── Bar Chart ─────────────────────────────────────────────────────────────
     function renderChart(d) {
-      const labels = ['Como Chegar', 'Stand HDI', 'CAT Turista'];
-      const values = [d.maps_clicks || 0, d.stand_opens || 0, d.cat_opens || 0];
-      const colors = ['#006a2c', '#008f53', '#60a869'];
+      const labels = ['Como Chegar', 'Stand HDI', 'CAT Turista', 'Instagram'];
+      const values = [d.maps_clicks || 0, d.stand_opens || 0, d.cat_opens || 0, d.instagram_clicks || 0];
+      const colors = ['#006a2c', '#008f53', '#60a869', '#c13584'];
 
       if (chart) { chart.data.datasets[0].data = values; chart.update('active'); return; }
 
@@ -918,9 +940,10 @@
         ['Taxa de engajamento',             rate],
         [],
         ['INTERAÇÕES NO MAPA', ''],
-        ['Como Chegar (rota Maps)',         d.maps_clicks   || 0],
-        ['Abertura modal Stand HDI',        d.stand_opens   || 0],
-        ['Abertura modal CAT Turista',      d.cat_opens     || 0],
+        ['Como Chegar (rota Maps)',         d.maps_clicks       || 0],
+        ['Abertura modal Stand HDI',        d.stand_opens       || 0],
+        ['Abertura modal CAT Turista',      d.cat_opens         || 0],
+        ['Instagram @hdisegurosbr',         d.instagram_clicks  || 0],
         [],
         ['LIGAÇÕES DE EMERGÊNCIA', ''],
         ['SAMU (192)',                       d.phone_samu      || 0],
