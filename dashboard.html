@@ -820,9 +820,9 @@
       <div class="kpi-card">
         <div class="kpi-content">
           <span class="kpi-label">Scans de QR Code</span>
-          <span class="kpi-value" id="kpi-scans">2.485</span>
-          <span class="kpi-trend positive" id="kpi-scans-trend">
-            ▲ +18.4% (Hoje)
+          <span class="kpi-value" id="kpi-scans">0</span>
+          <span class="kpi-trend neutral" id="kpi-scans-trend" style="background: rgba(0, 230, 118, 0.05); color: var(--color-neon-green);">
+            ● Monitorando ao vivo
           </span>
         </div>
         <div class="kpi-icon">
@@ -836,9 +836,9 @@
       <div class="kpi-card">
         <div class="kpi-content">
           <span class="kpi-label">Taxa de Engajamento</span>
-          <span class="kpi-value" id="kpi-engagement">84.2%</span>
-          <span class="kpi-trend positive" id="kpi-engagement-trend">
-            ▲ +2.1% vs Ontem
+          <span class="kpi-value" id="kpi-engagement">0.0%</span>
+          <span class="kpi-trend neutral" id="kpi-engagement-trend" style="background: rgba(0, 230, 118, 0.05); color: var(--color-neon-green);">
+            ● Interação ativa
           </span>
         </div>
         <div class="kpi-icon">
@@ -852,9 +852,9 @@
       <div class="kpi-card">
         <div class="kpi-content">
           <span class="kpi-label">Cliques em Hotspots</span>
-          <span class="kpi-value" id="kpi-hotspots">1.942</span>
-          <span class="kpi-trend positive" id="kpi-hotspots-trend">
-            ▲ +14.8% vs Ontem
+          <span class="kpi-value" id="kpi-hotspots">0</span>
+          <span class="kpi-trend neutral" id="kpi-hotspots-trend" style="background: rgba(0, 230, 118, 0.05); color: var(--color-neon-green);">
+            ● Cliques no mapa
           </span>
         </div>
         <div class="kpi-icon">
@@ -868,9 +868,9 @@
       <div class="kpi-card">
         <div class="kpi-content">
           <span class="kpi-label">Cliques "Como Chegar"</span>
-          <span class="kpi-value" id="kpi-directions">1.108</span>
-          <span class="kpi-trend positive" id="kpi-directions-trend">
-            ▲ +21.3% (Hoje)
+          <span class="kpi-value" id="kpi-directions">0</span>
+          <span class="kpi-trend neutral" id="kpi-directions-trend" style="background: rgba(0, 230, 118, 0.05); color: var(--color-neon-green);">
+            ● Cliques em rota
           </span>
         </div>
         <div class="kpi-icon">
@@ -1149,7 +1149,7 @@
       window.loadCounterAPIData = function() {
         const keys = ['scans', 'stand_opens', 'cat_opens', 'maps_clicks', 'phone_samu', 'phone_defesa', 'phone_bombeiros', 'phone_civil', 'phone_militar'];
         const fetchPromises = keys.map(key => 
-          fetch(`https://api.counterapi.dev/v1/hdi_mapa_junino_2026/${key}`)
+          fetch(`https://api.counterapi.dev/v1/hdi_saojoao_caruaru_2026/${key}/`)
             .then(res => res.json())
             .then(data => ({ key, count: data.count || 0 }))
             .catch(() => ({ key, count: 0 }))
@@ -1380,6 +1380,14 @@
 
     // Chart.js initialization
     function initCharts() {
+      const isDemo = state.isDemo;
+      const hourlyData = isDemo ? state.demoData.hourlyScans : [0, 0, 0, 0, 0, 0, 0, 0];
+      const clickData = isDemo ? [
+        state.demoData.linkClicks.comoChegar,
+        state.demoData.linkClicks.standHdi,
+        state.demoData.linkClicks.catTurista
+      ] : [0, 0, 0];
+
       // 1. Line hourly scans chart
       const ctxHourly = document.getElementById('scans-hourly-chart').getContext('2d');
       state.charts.hourly = new Chart(ctxHourly, {
@@ -1388,7 +1396,7 @@
           labels: state.demoData.hourlyLabels,
           datasets: [{
             label: 'Volume de Scans',
-            data: state.demoData.hourlyScans,
+            data: hourlyData,
             borderColor: '#00e676',
             backgroundColor: 'rgba(0, 230, 118, 0.08)',
             borderWidth: 3,
@@ -1424,11 +1432,7 @@
         data: {
           labels: ['Como Chegar', 'Stand HDI', 'C.A.T. Turista'],
           datasets: [{
-            data: [
-              state.demoData.linkClicks.comoChegar,
-              state.demoData.linkClicks.standHdi,
-              state.demoData.linkClicks.catTurista
-            ],
+            data: clickData,
             backgroundColor: ['#f59e0b', '#008f53', '#3b82f6'],
             borderWidth: 2,
             borderColor: '#0b0f19'

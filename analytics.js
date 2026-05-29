@@ -115,7 +115,7 @@
       }
 
       if (key) {
-        fetch(`https://api.counterapi.dev/v1/hdi_mapa_junino_2026/${key}/up`)
+        fetch(`https://api.counterapi.dev/v1/hdi_saojoao_caruaru_2026/${key}/up/`)
           .then(res => res.json())
           .then(data => {
             console.log(`📈 CounterAPI updated: ${key} = ${data.count}`);
