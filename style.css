@@ -1,91 +1,145 @@
-/* Import fonts from Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --color-bg: #006a2c; /* HDI primary emerald green */
-  --color-primary-light: #008f53; /* Vibrant brand green */
-  --color-white: #ffffff;
-  --color-text-dark: #333333;
-  --color-text-muted: #666666;
-  --font-title: 'Outfit', sans-serif;
-  --font-body: 'Inter', sans-serif;
-  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --green:        #006a2c;
+  --green-light:  #008f53;
+  --green-dark:   #00511f;
+  --white:        #ffffff;
+  --text-dark:    #1c2e1c;
+  --text-muted:   #6b8a6b;
+  --font-title:   'Outfit', sans-serif;
+  --font-body:    'Inter', sans-serif;
+  --ease:         cubic-bezier(0.4, 0, 0.2, 1);
+  --spring:       cubic-bezier(0.34, 1.15, 0.64, 1);
 }
 
-* {
+/* ─── Reset ─── */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
 
+html { scroll-behavior: smooth; }
+
 body {
-  background-color: var(--color-bg);
-  color: var(--color-white);
+  background-color: var(--green);
+  color: var(--white);
   font-family: var(--font-body);
   line-height: 1.6;
   overflow-x: hidden;
+  min-height: 100vh;
 }
 
-/* Mobile-first centered container layout */
+/* ─── Parallax Background ─── */
+.parallax-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.parallax-orb {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.055);
+  will-change: transform;
+}
+
+.orb-1 { width: 340px; height: 340px; top: -100px; left: -110px; }
+.orb-2 { width: 220px; height: 220px; top: 28%;   right: -70px;  opacity: 0.75; }
+.orb-3 { width: 170px; height: 170px; top: 58%;   left: -50px;   opacity: 0.55; }
+.orb-4 { width: 260px; height: 260px; bottom: 5%; right: -90px;  opacity: 0.45; }
+
+/* ─── Layout ─── */
 .app-container {
+  position: relative;
+  z-index: 1;
   width: 100%;
-  max-width: 500px; /* Perfect smartphone mockup layout */
+  max-width: 500px;
   margin: 0 auto;
   min-height: 100vh;
-  padding: 24px 20px 40px 20px;
+  padding: 24px 18px 52px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
-/* Base card styling */
+/* ─── Base Card ─── */
 .card {
   width: 100%;
   border-radius: 24px;
   overflow: hidden;
-  transition: var(--transition-smooth);
 }
 
-/* Header & Logo styling */
-.header-card {
-  background-color: var(--color-white);
+/* ─── Hero Card ─── */
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-card {
+  background-color: var(--white);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  padding: 24px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  padding: 28px 24px 22px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.22);
+  animation: heroIn 0.65s var(--spring) both;
 }
 
 .logo-svg {
   width: auto;
-  height: 64px;
+  height: 60px;
   display: block;
 }
 
-/* Title Card styling */
-.title-card {
-  background-color: var(--color-white);
-  color: var(--color-bg);
-  text-align: center;
-  padding: 16px 20px;
+.hero-divider {
+  width: 44px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--green), var(--green-light));
+  border-radius: 2px;
+  margin: 16px 0 13px;
+}
+
+.hero-title {
   font-family: var(--font-title);
   font-weight: 800;
-  font-size: 24px;
-  letter-spacing: 1.5px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-}
-
-.title-card h1 {
-  font-size: 24px;
+  font-size: 21px;
+  color: var(--green);
   text-transform: uppercase;
-  margin: 0;
+  letter-spacing: 2.5px;
+  text-align: center;
 }
 
-/* Map Card Section */
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green-light);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 5px;
+  opacity: 0.8;
+}
+
+/* ─── Scroll Reveal ─── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--spring);
+}
+
+[data-reveal].revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Map Card ─── */
 .map-card {
   position: relative;
-  background-color: transparent;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -94,10 +148,10 @@ body {
 .map-image-wrapper {
   position: relative;
   width: 100%;
-  border-radius: 28px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
-  background-color: var(--color-white);
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.28);
+  background-color: var(--white);
 }
 
 .map-image {
@@ -106,17 +160,13 @@ body {
   display: block;
 }
 
-/* Interactive Hotspot Buttons overlay on image */
+/* ─── Map Hotspots ─── */
 .map-hotspot {
   position: absolute;
   cursor: pointer;
-  background-color: rgba(255, 255, 255, 0); /* Transparent standard */
   border-radius: 50px;
-  transition: var(--transition-smooth);
   border: 2px dashed transparent;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  transition: all 0.25s var(--ease);
   z-index: 10;
 }
 
@@ -127,229 +177,236 @@ body {
 
 .map-hotspot:active {
   transform: scale(0.95);
-  background-color: rgba(0, 143, 83, 0.3);
+  background-color: rgba(0, 143, 83, 0.28);
 }
 
-/* Precise percentage positions calculated for map-section.png */
-.hotspot-stand {
-  left: 28.5%;
-  width: 28%;
-  top: 83%;
-  height: 14%;
-}
+.hotspot-stand { left: 28.5%; width: 28%; top: 83%; height: 14%; }
+.hotspot-cat   { left: 58.5%; width: 31%; top: 83%; height: 14%; }
 
-.hotspot-cat {
-  left: 58.5%;
-  width: 31%;
-  top: 83%;
-  height: 14%;
-}
-
-/* Pulse animation for CTA button */
+/* ─── CTA Button ─── */
 @keyframes pulse {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6);
-  }
-  70% {
-    transform: scale(1.03);
-    box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-  }
+  0%   { box-shadow: 0 0 0 0   rgba(255, 255, 255, 0.55); }
+  70%  { box-shadow: 0 0 0 14px rgba(255, 255, 255, 0); }
+  100% { box-shadow: 0 0 0 0   rgba(255, 255, 255, 0); }
 }
 
-/* Prominent Como Chegar Button */
 .cta-button {
   width: 100%;
-  margin-top: 16px;
-  background-color: var(--color-white);
-  color: var(--color-bg);
-  border: none;
+  margin-top: 14px;
+  background-color: var(--white);
+  color: var(--green);
   border-radius: 50px;
-  padding: 18px 24px;
+  padding: 17px 24px;
   font-family: var(--font-title);
-  font-weight: 800;
-  font-size: 18px;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
   text-decoration: none;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  transition: var(--transition-smooth);
+  gap: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
   animation: pulse 2.5s infinite;
   cursor: pointer;
 }
 
 .cta-button svg {
   fill: currentColor;
-  width: 24px;
-  height: 24px;
-  transition: var(--transition-smooth);
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  transition: transform 0.25s var(--ease);
 }
 
 .cta-button:hover {
   transform: translateY(-2px);
-  background-color: #f8fcf9;
-  box-shadow: 0 12px 30px rgba(255, 255, 255, 0.25);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.25);
 }
 
-.cta-button:active {
-  transform: translateY(1px);
-}
+.cta-button:hover svg { transform: translateX(3px); }
+.cta-button:active    { transform: translateY(0); }
 
-.cta-button:hover svg {
-  transform: translateX(4px);
-}
-
-/* Itens Proibidos Section */
-.prohibited-card {
-  background-color: rgba(255, 255, 255, 0.08);
-  border: 1.5px solid rgba(255, 255, 255, 0.15);
-  padding: 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
+/* ─── Section Title ─── */
 .section-title {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   font-family: var(--font-title);
   font-weight: 700;
-  font-size: 22px;
-  letter-spacing: 1px;
+  font-size: 17px;
+  letter-spacing: 1.4px;
   text-transform: uppercase;
   margin-bottom: 20px;
   text-align: center;
 }
 
 .section-title svg {
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+/* ─── Itens Proibidos ─── */
+.prohibited-card {
+  background-color: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  padding: 26px 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.prohibited-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.prohibited-grid li {
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 9px 11px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.4;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.prohibited-grid li::before {
+  content: '✕';
+  font-size: 9px;
+  font-weight: 800;
+  color: #ff8a80;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.prohibited-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.22);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.55;
+}
+
+.prohibited-warning svg {
+  fill: #ffc107;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ─── Telefones Úteis ─── */
+.phones-card {
+  background-color: var(--white);
+  color: var(--text-dark);
+  padding: 26px 20px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.phones-card .section-title       { color: var(--green); }
+.phones-card .section-title svg   { fill: var(--green); }
+
+.phone-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.phone-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  border-radius: 14px;
+  background: rgba(0, 106, 44, 0.05);
+  border: 1.5px solid rgba(0, 106, 44, 0.09);
+  text-decoration: none;
+  transition: background 0.22s var(--ease), border-color 0.22s var(--ease), transform 0.22s var(--ease);
+  color: var(--text-dark);
+}
+
+.phone-item:hover {
+  background: rgba(0, 106, 44, 0.09);
+  border-color: rgba(0, 106, 44, 0.2);
+  transform: translateX(3px);
+}
+
+.phone-item:active {
+  transform: translateX(0);
+  background: rgba(0, 106, 44, 0.14);
+}
+
+.phone-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.phone-number {
+  font-family: var(--font-title);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--green);
+  background: rgba(0, 106, 44, 0.08);
+  border-radius: 8px;
+  padding: 3px 11px;
+  min-width: 46px;
+  text-align: center;
+}
+
+/* ─── QR Badge ─── */
+.qr-badge {
+  text-align: center;
+  margin-top: 6px;
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.qr-badge svg {
+  width: 14px;
+  height: 14px;
   fill: currentColor;
 }
 
-.prohibited-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  font-size: 15px;
-  font-weight: 500;
-  text-align: center;
-}
-
-.prohibited-list li {
-  position: relative;
-  padding: 0 8px;
-  color: rgba(255, 255, 255, 0.95);
-}
-
-.prohibited-list li span.divider {
-  margin: 0 8px;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-/* Useful Phones Section */
-.phones-card {
-  background-color: var(--color-white);
-  color: var(--color-text-dark);
-  padding: 24px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.phones-card .section-title {
-  color: var(--color-bg);
-  margin-bottom: 16px;
-}
-
-.phones-card .section-title svg {
-  fill: var(--color-bg);
-}
-
-.phone-subtitle {
-  font-family: var(--font-title);
-  font-weight: 700;
-  font-size: 18px;
-  color: var(--color-bg);
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.phone-group {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.phone-group:last-of-type {
-  margin-bottom: 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
-  padding-top: 16px;
-}
-
-.phone-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-text-dark);
-  text-decoration: none;
-  font-size: 16px;
-  font-weight: 600;
-  padding: 8px 16px;
-  border-radius: 12px;
-  transition: var(--transition-smooth);
-  border: 1.5px solid transparent;
-}
-
-.phone-link strong {
-  color: var(--color-bg);
-  font-family: var(--font-title);
-  font-size: 17px;
-  margin-left: 5px;
-}
-
-.phone-link:hover {
-  background-color: rgba(0, 106, 44, 0.05);
-  border-color: rgba(0, 106, 44, 0.15);
-  transform: translateY(-1px);
-}
-
-.phone-link:active {
-  transform: translateY(0);
-  background-color: rgba(0, 106, 44, 0.1);
-}
-
-/* Modals & Info Panel overlay */
+/* ─── Modais ─── */
 .info-modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.65);
   -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.28s var(--ease);
 }
 
 .info-modal.active {
@@ -358,94 +415,74 @@ body {
 }
 
 .modal-content {
-  background-color: var(--color-white);
-  color: var(--color-text-dark);
-  width: 90%;
-  max-width: 400px;
+  background-color: var(--white);
+  color: var(--text-dark);
+  width: 88%;
+  max-width: 380px;
   border-radius: 28px;
   padding: 32px 24px;
   text-align: center;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-  transform: translateY(30px);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+  transform: translateY(32px) scale(0.96);
+  transition: transform 0.35s var(--spring);
 }
 
 .info-modal.active .modal-content {
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 .modal-icon {
-  width: 64px;
-  height: 64px;
-  background-color: rgba(0, 106, 44, 0.1);
+  width: 60px;
+  height: 60px;
+  background-color: rgba(0, 106, 44, 0.08);
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 auto 20px auto;
+  margin: 0 auto 18px;
 }
 
 .modal-icon svg {
-  width: 32px;
-  height: 32px;
-  fill: var(--color-bg);
+  width: 28px;
+  height: 28px;
+  fill: var(--green);
 }
 
 .modal-title {
   font-family: var(--font-title);
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 800;
-  color: var(--color-bg);
-  margin-bottom: 12px;
+  color: var(--green);
+  margin-bottom: 10px;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .modal-description {
-  font-size: 15px;
-  color: var(--color-text-muted);
-  margin-bottom: 24px;
-  line-height: 1.6;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 22px;
+  line-height: 1.65;
 }
 
 .modal-close-btn {
-  background-color: var(--color-bg);
-  color: var(--color-white);
+  background-color: var(--green);
+  color: var(--white);
   border: none;
   border-radius: 50px;
   padding: 14px 28px;
   font-family: var(--font-title);
   font-weight: 700;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
   width: 100%;
-  transition: var(--transition-smooth);
-  box-shadow: 0 4px 15px rgba(0, 106, 44, 0.3);
+  letter-spacing: 0.5px;
+  transition: background 0.22s var(--ease), transform 0.22s var(--ease);
 }
 
 .modal-close-btn:hover {
-  background-color: var(--color-primary-light);
+  background-color: var(--green-light);
   transform: translateY(-1px);
 }
 
-.modal-close-btn:active {
-  transform: translateY(0);
-}
-
-/* Floating Action QR code utility (optional & elegant) */
-.qr-badge {
-  text-align: center;
-  margin-top: 10px;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-}
-
-.qr-badge svg {
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
-}
+.modal-close-btn:active { transform: translateY(0); }
