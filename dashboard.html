@@ -784,8 +784,8 @@
         </div>
 
         <div class="toggle-container">
-          <button class="toggle-btn active" id="btn-toggle-demo">Simulado</button>
-          <button class="toggle-btn" id="btn-toggle-real">Tempo Real (Live)</button>
+          <button class="toggle-btn" id="btn-toggle-demo">Simulado</button>
+          <button class="toggle-btn active" id="btn-toggle-real">Tempo Real (Live)</button>
         </div>
 
         <button class="btn-action" id="btn-export-pdf">
@@ -798,14 +798,13 @@
     </header>
 
     <!-- Demo Data Banner -->
-    <div class="demo-banner" id="banner-demo-mode">
+    <div class="demo-banner" id="banner-demo-mode" style="background: linear-gradient(135deg, rgba(0, 230, 118, 0.1), rgba(0, 230, 118, 0.05)); border-color: rgba(0, 230, 118, 0.3);">
       <p>
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
-        </svg>
-        <span>Você está visualizando os <strong>Dados de Demonstração</strong> (Simulado). O painel está populado com interações reais estimadas do festival do São João de Caruaru.</span>
+        <span class="live-badge" style="background: rgba(0, 230, 118, 0.15); border-color: var(--color-neon-green); margin-right: 10px;">
+          <span class="dot"></span> LIVE
+        </span>
+        <span>Você está visualizando os <strong>Dados em Tempo Real (Live)</strong>. Os scans e cliques de teste feitos no mapa agora refletirão instantaneamente neste painel!</span>
       </p>
-      <button class="btn-action btn-primary" style="padding: 6px 12px; font-size: 11px; border-radius: 8px;" onclick="switchTab('config-tab-btn', 'setup-tab-content')">Como Conectar GA4</button>
     </div>
 
     <!-- Navigation Tabs -->
@@ -1043,7 +1042,7 @@
   <script>
     // Global Dashboard State
     const state = {
-      isDemo: true,
+      isDemo: false, // Default to REAL live tracking for absolute functional accuracy!
       charts: {
         hourly: null,
         clicks: null
@@ -1087,9 +1086,9 @@
     document.addEventListener('DOMContentLoaded', () => {
       initCharts();
       initMap();
-      renderKPIs();
-      renderFeed();
-      renderBreakdowns();
+      
+      // Load real CounterAPI data immediately as the default state
+      loadCounterAPIData();
       
       // Hook Exports
       document.getElementById('btn-export-pdf').addEventListener('click', () => {
@@ -1205,6 +1204,7 @@
 
           if (!state.isDemo) {
             renderKPIs();
+            renderFeed();
             updateChartsData();
             renderBreakdowns();
             updateMapMarkers();
@@ -1536,19 +1536,68 @@
       const feed = document.getElementById('interaction-feed');
       feed.innerHTML = '';
 
-      const actions = [
-        { type: 'scan', text: 'Novo QR Code escaneado no Pátio de Eventos', detail: 'Origem: Recife, PE', time: '1min atrás' },
-        { type: 'direction', text: 'Clique em "Como Chegar" acionado', detail: 'Dispositivo: iPhone (iOS)', time: '3min atrás' },
-        { type: 'hotspot', text: 'Visualizou informações do Stand HDI', detail: 'Modal Aberto', time: '4min atrás' },
-        { type: 'phone', text: 'Ligação direta realizada para SAMU 192', detail: 'Úteis de Segurança', time: '8min atrás' },
-        { type: 'scan', text: 'Novo QR Code escaneado no Aeroporto de Caruaru', detail: 'Origem: São Paulo, SP', time: '12min atrás' },
-        { type: 'hotspot', text: 'Visualizou informações do C.A.T. Turista', detail: 'Modal Aberto', time: '15min atrás' },
-        { type: 'scan', text: 'Novo QR Code escaneado na Entrada Principal', detail: 'Origem: Caruaru, PE', time: '18min atrás' }
-      ];
+      if (state.isDemo) {
+        const actions = [
+          { type: 'scan', text: 'Novo QR Code escaneado no Pátio de Eventos', detail: 'Origem: Recife, PE', time: '1min atrás' },
+          { type: 'direction', text: 'Clique em "Como Chegar" acionado', detail: 'Dispositivo: iPhone (iOS)', time: '3min atrás' },
+          { type: 'hotspot', text: 'Visualizou informações do Stand HDI', detail: 'Modal Aberto', time: '4min atrás' },
+          { type: 'phone', text: 'Ligação direta realizada para SAMU 192', detail: 'Úteis de Segurança', time: '8min atrás' },
+          { type: 'scan', text: 'Novo QR Code escaneado no Aeroporto de Caruaru', detail: 'Origem: São Paulo, SP', time: '12min atrás' },
+          { type: 'hotspot', text: 'Visualizou informações do C.A.T. Turista', detail: 'Modal Aberto', time: '15min atrás' },
+          { type: 'scan', text: 'Novo QR Code escaneado na Entrada Principal', detail: 'Origem: Caruaru, PE', time: '18min atrás' }
+        ];
 
-      actions.forEach(act => {
-        feed.appendChild(createFeedItemElement(act));
-      });
+        actions.forEach(act => {
+          feed.appendChild(createFeedItemElement(act));
+        });
+      } else {
+        // Real Mode - read from localStorage of the current browser for actual validation
+        try {
+          const localEvents = JSON.parse(localStorage.getItem('hdi_event_log') || '[]');
+          if (localEvents.length > 0) {
+            // Sort by latest first
+            const sortedEvents = [...localEvents].reverse().slice(0, 10);
+            sortedEvents.forEach(evt => {
+              let text = '';
+              let type = '';
+              let detail = evt.params.source ? `Origem: ${evt.params.source}` : 'Dispositivo Web';
+              
+              if (evt.event === 'qr_scan') {
+                text = 'QR Code Escaneado';
+                type = 'scan';
+              } else if (evt.event === 'open_hotspot') {
+                text = `Hotspot visualizado: ${evt.params.hotspot_name || evt.params.hotspot}`;
+                type = 'hotspot';
+              } else if (evt.event === 'click_direction') {
+                text = 'Botão "Como Chegar" clicado';
+                type = 'direction';
+              } else if (evt.event === 'click_phone') {
+                text = `Chamada para telefone útil: ${evt.params.phone_name}`;
+                type = 'phone';
+              }
+              
+              const timeStr = new Date(evt.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+              
+              feed.appendChild(createFeedItemElement({
+                type: type,
+                text: text,
+                detail: detail,
+                time: timeStr
+              }));
+            });
+          } else {
+            feed.innerHTML = `
+              <div style="text-align:center; padding:45px 10px; color:var(--color-text-secondary); font-size:13px; width: 100%;">
+                <svg viewBox="0 0 24 24" style="width:36px; height:36px; fill:var(--color-neon-green); margin-bottom:10px; opacity:0.75;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><br/>
+                Nenhuma interação registrada nesta máquina ainda.<br/>
+                <span style="font-size:11px; opacity:0.6; display:block; margin-top:6px;">Escaneie o QR Code em seu celular e clique nos botões do mapa para ver as notificações saltarem aqui em tempo real!</span>
+              </div>
+            `;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
     }
 
     function createFeedItemElement(act) {
